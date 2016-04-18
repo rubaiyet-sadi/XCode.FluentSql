@@ -1,0 +1,4 @@
+C:\Users\Sadi\Documents\Visual Studio 2013\Projects\XCode.QueryBuilder\XCode.QueryBuilder\bin\Debug\XCode.QueryBuilder.dll
+C:\Users\Sadi\Documents\Visual Studio 2013\Projects\XCode.QueryBuilder\XCode.QueryBuilder\bin\Debug\XCode.QueryBuilder.pdb
+C:\Users\Sadi\Documents\Visual Studio 2013\Projects\XCode.QueryBuilder\XCode.QueryBuilder\obj\Debug\XCode.QueryBuilder.dll
+C:\Users\Sadi\Documents\Visual Studio 2013\Projects\XCode.QueryBuilder\XCode.QueryBuilder\obj\Debug\XCode.QueryBuilder.pdb

@@ -1,0 +1,5 @@
+C:\Users\Sadi\Documents\Visual Studio 2013\Projects\XCode.QueryBuilder\XCode.QueryBuilder\bin\Debug\XCode.FluentSql.dll
+C:\Users\Sadi\Documents\Visual Studio 2013\Projects\XCode.QueryBuilder\XCode.QueryBuilder\bin\Debug\XCode.FluentSql.pdb
+C:\Users\Sadi\Documents\Visual Studio 2013\Projects\XCode.QueryBuilder\XCode.QueryBuilder\obj\Debug\XCode.FluentSql.dll
+C:\Users\Sadi\Documents\Visual Studio 2013\Projects\XCode.QueryBuilder\XCode.QueryBuilder\obj\Debug\XCode.FluentSql.pdb
+C:\Users\Sadi\Documents\Visual Studio 2013\Projects\XCode.QueryBuilder\XCode.QueryBuilder\obj\Debug\XCode.FluentSql.csprojResolveAssemblyReference.cache
