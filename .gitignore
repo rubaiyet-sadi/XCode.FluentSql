@@ -1,0 +1,3 @@
+*.pdb
+XCode.FluentSql/obj/*
+XCode.FluentSql.Tests.NUnit/obj/*
