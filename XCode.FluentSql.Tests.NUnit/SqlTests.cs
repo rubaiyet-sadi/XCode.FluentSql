@@ -64,6 +64,31 @@ namespace XCode.FluentSql.Tests.NUnit
         }
 
         [Test]
+        public void OneTypeWithWhereWithVariable()
+        {
+            var testVar = "AA";
+            var generatedSql = QueryFactory.AsMySqlQuery<Customer>().Select(c => new
+            {
+                c.Id,
+                c.FirstName,
+                c.MiddleInitial,
+                c.LastName,
+                c.DateofBirth,
+                c.SSN
+            })
+                .Where(c => c.FirstName == testVar && c.LastName == "BB")
+                .ToString();
+
+            var expectedSql = AsSqlString(
+                "SELECT `customers`.`Id`, `customers`.`FirstName`, `customers`.`MiddleInitial`, `customers`.`LastName`, `customers`.`DateofBirth`, `customers`.`SSN`",
+                "FROM `customers`",
+                "WHERE `customers`.`FirstName`=`AA` AND `customers`.`LastName`=`BB`");
+
+            generatedSql.ShouldBe(expectedSql);
+
+        }
+
+        [Test]
         public void SelectStarWithoutWhere()
         {
             var generatedSql = QueryFactory.AsMySqlQuery<Customer>().Select().ToString();

@@ -53,7 +53,7 @@ namespace XCode.FluentSql
                     {
                         var prdicateString = GetExpressionString(binaryExpression.Left) +
                                               GetOperator(expression.NodeType) +
-                                              GetExpressionString(binaryExpression.Right);
+                                              _dbConvention.ToValueNameConvention(GetExpressionValue(binaryExpression.Right));
                         builder.Add(prdicateString);
                     }
                     break;
@@ -103,6 +103,28 @@ namespace XCode.FluentSql
                 return _dbConvention.ToValueNameConvention(dynamicValue);
             }
             return string.Empty;
+        }
+
+        private string GetExpressionValue(Expression expression)
+        {
+            var memberExpression = expression as MemberExpression;
+            if (memberExpression != null)
+            {
+                var objectMember = Expression.Convert(memberExpression, typeof(object));
+
+                var getterLambda = Expression.Lambda<Func<object>>(objectMember);
+
+                var getter = getterLambda.Compile();
+
+                return getter().ToString();
+            }
+            var constantExpression = expression as ConstantExpression;
+
+            if(constantExpression != null)
+            {
+                return constantExpression.Value.ToString();
+            }
+            throw new InvalidOperationException("");
         }
 
         private string GetOperator(ExpressionType expressionType)
