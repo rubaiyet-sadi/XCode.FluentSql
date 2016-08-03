@@ -14,7 +14,7 @@ namespace XCode.FluentSql.Extensions
 
             var typeList = arguments.Select(a => ((System.Linq.Expressions.MemberExpression)a).Member).ToList();
 
-            return dbConvension.ToSelectClauseString(typeList.Select(a => new Tuple<string, string>(a.ReflectedType.Name, a.Name)));
+            return dbConvension.ToSelectClauseString(typeList.Select(a =>  Tuple.Create<string, string>(a.ReflectedType.Name, a.Name)));
         }
 
         public static string BuildWhereClauseString(this Expression expression, BaseConvension dbConvention)
@@ -24,9 +24,9 @@ namespace XCode.FluentSql.Extensions
             return dbConvention.ToWhereClauseString(builder);
         }
 
-        public static IList<string> PredicateParser(this Expression expression, BaseConvension dbConvention)
+        public static IList<string> PredicateParser(this Expression expression, BaseConvension dbConvention, bool getValueFromRhf = true)
         {
-            var expressionParser = new ExpressionParser(dbConvention);
+            var expressionParser = new ExpressionParser(dbConvention, getValueFromRhf);
             return expressionParser.ParsePredicate(expression);
         } 
     }

@@ -128,6 +128,8 @@ namespace XCode.FluentSql.DbConvension
                 clauseList.Aggregate((a,b) => ToClauseConvention(a,b))
                 );
         }
+
+        public abstract string ToContainsString(string field, string list);
     }
 
     public  class MysqlConvention : BaseConvension
@@ -140,6 +142,12 @@ namespace XCode.FluentSql.DbConvension
         public MysqlConvention(string entityWrapper)
         {
             EntityWrapper = entityWrapper;
+        }
+
+        public override string ToContainsString(string field, string list)
+
+        {
+            return field + " IN (" + list + ")";
         }
     }
 }

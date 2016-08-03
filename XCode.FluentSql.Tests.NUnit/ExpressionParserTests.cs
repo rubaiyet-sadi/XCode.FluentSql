@@ -59,7 +59,7 @@ namespace XCode.FluentSql.Tests.NUnit
         [Test]
         public void SinglePredicateEqualsObjectValueTest()
         {
-            var randomGuid = Guid.NewGuid();
+            var randomGuid = Guid.Empty;
             Expression<Func<Customer, bool>> findCustomer = customer => customer.Id == randomGuid;
             var generated = findCustomer.BuildWhereClauseString(new MysqlConvention());
 

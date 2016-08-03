@@ -63,7 +63,7 @@ namespace XCode.FluentSql
         {
             if(expression == null) throw new ArgumentNullException();
 
-            var joinCondition = expression.PredicateParser(DbConvension);
+            var joinCondition = expression.PredicateParser(DbConvension, false);
 
             JoinClauseList.Add(
                 DbConvension.ToJoinClauseConvention(entity, joinCondition, joinType));

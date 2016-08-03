@@ -2,16 +2,23 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using XCode.FluentSql.DbConvension;
+using XCode.FluentSql.Extensions;
 
 namespace XCode.FluentSql
 {
     internal class ExpressionParser
     {
         private readonly BaseConvension _dbConvention;
+        private readonly bool _getValueFromRhf;
 
         public ExpressionParser(BaseConvension dbConvension)
         {
             _dbConvention = dbConvension;
+        }
+
+        public ExpressionParser(BaseConvension dbConvension, bool getValueFromRhf) : this(dbConvension)
+        {
+            _getValueFromRhf = getValueFromRhf;
         }
 
         public IList<string> ParsePredicate(Expression expression)
@@ -53,21 +60,34 @@ namespace XCode.FluentSql
                     {
                         var prdicateString = GetExpressionString(binaryExpression.Left) +
                                               GetOperator(expression.NodeType) +
-                                              _dbConvention.ToValueNameConvention(GetExpressionValue(binaryExpression.Right));
+                                              (_getValueFromRhf 
+                                                ? _dbConvention.ToValueNameConvention(GetExpressionValue(binaryExpression.Right))
+                                                : GetExpressionString(binaryExpression.Right));
                         builder.Add(prdicateString);
                     }
                     break;
                 case ExpressionType.Convert:
                     expression = ((UnaryExpression)expression).Operand;
                     break;
-                case ExpressionType.MemberAccess:
-                    //MemberExpression memberExpression = (MemberExpression)expression;
-                    //MemberInfo mi = memberExpression.Member;
-                    break; ;
+                case ExpressionType.Call:
+                    builder.Add(ProcessMethodCall(expression));
+                    break;
                 default:
                     break;
             }
             return;
+        }
+
+        private string ProcessMethodCall(Expression expression)
+        {
+
+            MethodCallExpression methodCallExpression = expression as MethodCallExpression;
+
+            var caller = methodCallExpression.Object;
+
+            var arguments = methodCallExpression.Arguments;
+
+            return methodCallExpression != null ? methodCallExpression.Parse(_dbConvention) : string.Empty;
         }
 
         private string GetExpressionString(Expression expression)
@@ -75,7 +95,7 @@ namespace XCode.FluentSql
             var lambdaExpression = expression as LambdaExpression;
             if (lambdaExpression != null)
             {
-                var dynamicObject = lambdaExpression.Compile().DynamicInvoke();//.GetType();
+                var dynamicObject = lambdaExpression.Compile().DynamicInvoke();
                 if (IsSimpleType(dynamicObject.GetType()))
                 {
                     _dbConvention.ToValueNameConvention(dynamicObject.ToString());
@@ -107,16 +127,12 @@ namespace XCode.FluentSql
 
         private string GetExpressionValue(Expression expression)
         {
+            var methodCallExpression = expression as MethodCallExpression;
+
             var memberExpression = expression as MemberExpression;
             if (memberExpression != null)
             {
-                var objectMember = Expression.Convert(memberExpression, typeof(object));
-
-                var getterLambda = Expression.Lambda<Func<object>>(objectMember);
-
-                var getter = getterLambda.Compile();
-
-                return getter().ToString();
+                return memberExpression.GetValue<object>().ToString();
             }
             var constantExpression = expression as ConstantExpression;
 
@@ -135,23 +151,16 @@ namespace XCode.FluentSql
                     return "AND";
                 case ExpressionType.OrElse:
                     return "OR";
-
-
                 case ExpressionType.Equal:
                     return "=";
-                    break;
                 case ExpressionType.GreaterThan:
                     return ">";
-                    break;
                 case ExpressionType.GreaterThanOrEqual:
                     return ">=";
-                    break;
                 case ExpressionType.LessThan:
                     return "<";
-                    break;
                 case ExpressionType.LessThanOrEqual:
                     return "<=";
-                    break;
                 default:
                     return string.Empty;
             }

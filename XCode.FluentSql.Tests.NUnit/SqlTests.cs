@@ -64,6 +64,31 @@ namespace XCode.FluentSql.Tests.NUnit
         }
 
         [Test]
+        public void OneTypeWithContainsOnWhere()
+        {
+            var testList = new List<string>() { "AA", "BB", "CC" };
+            var generatedSql = QueryFactory.AsMySqlQuery<Customer>().Select(c => new
+            {
+                c.Id,
+                c.FirstName,
+                c.MiddleInitial,
+                c.LastName,
+                c.DateofBirth,
+                c.SSN
+            })
+                .Where(c => testList.Contains(c.FirstName) && c.LastName == "BB")
+                .ToString();
+
+            var expectedSql = AsSqlString(
+                "SELECT `customers`.`Id`, `customers`.`FirstName`, `customers`.`MiddleInitial`, `customers`.`LastName`, `customers`.`DateofBirth`, `customers`.`SSN`",
+                "FROM `customers`",
+                "WHERE `customers`.`FirstName` IN (`AA`, `BB`, `CC`) AND `customers`.`LastName`=`BB`");
+
+            generatedSql.ShouldBe(expectedSql);
+
+        }
+
+        [Test]
         public void OneTypeWithWhereWithVariable()
         {
             var testVar = "AA";
